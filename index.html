@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#fdf3ea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="robots" content="noindex, nofollow">
+<title>屈佳佳专用摸摸器</title>
+<style>
+  :root{
+    --cream:#fdf3ea;
+    --cream2:#ffe9dd;
+    --pink:#ff9db3;
+    --pink-deep:#f4708c;
+    --ink:#6d4a3f;
+    --ink-soft:#a3806f;
+    --press:0;
+    --lx:50%;
+    --ly:34%;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink);
+    background:radial-gradient(120% 90% at 50% 8%,#fffaf4 0%,var(--cream) 42%,var(--cream2) 100%);
+    overflow:hidden;
+    overscroll-behavior:none;
+    touch-action:manipulation;
+    -webkit-user-select:none;user-select:none;
+    display:flex;flex-direction:column;
+    height:100dvh;
+    padding:calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 14px);
+  }
+  /* ---------- background decorations ---------- */
+  .bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+  .glow{
+    position:absolute;left:50%;top:38%;width:78vmin;height:78vmin;transform:translate(-50%,-50%);
+    background:radial-gradient(circle,rgba(255,192,205,.42),rgba(255,214,190,.16) 45%,transparent 68%);
+    filter:blur(6px);
+    animation:breathe 7s ease-in-out infinite;
+  }
+  @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.85}50%{transform:translate(-50%,-50%) scale(1.08);opacity:1}}
+  .dust{position:absolute;border-radius:50%;background:#fff;opacity:.75;box-shadow:0 0 8px rgba(255,190,200,.8);
+    animation:float linear infinite;}
+  @keyframes float{
+    0%{transform:translate3d(0,10vh,0) scale(.7);opacity:0}
+    15%{opacity:.8}
+    85%{opacity:.6}
+    100%{transform:translate3d(6vw,-95vh,0) scale(1.1);opacity:0}
+  }
+  /* ---------- header ---------- */
+  header{position:relative;z-index:2;text-align:center;flex:0 0 auto;padding-top:2px;}
+  .title{
+    font-size:15px;letter-spacing:.22em;color:var(--ink-soft);
+    font-weight:600;
+  }
+  .title span{color:var(--pink-deep);}
+  .hint{
+    margin-top:7px;font-size:12.5px;color:var(--ink-soft);opacity:.85;
+    transition:opacity .5s ease;
+  }
+  .hint.gone{opacity:0;}
+  /* ---------- stage ---------- */
+  .stage{
+    position:relative;z-index:2;flex:1 1 auto;
+    display:flex;align-items:center;justify-content:center;
+    min-height:0;
+  }
+  .frame{
+    position:relative;
+    width:min(86vw, 58dvh, 392px);
+    aspect-ratio:1/1;
+    border-radius:34px;
+    background:#fff;
+    padding:7px;
+    box-shadow:
+      0 30px 60px -22px rgba(214,140,120,.55),
+      0 8px 22px -10px rgba(214,140,120,.35),
+      inset 0 0 0 1px rgba(255,255,255,.9);
+    transform:rotate(-1.4deg);
+    transition:transform .5s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .pet{
+    position:relative;width:100%;height:100%;border-radius:28px;overflow:hidden;
+    touch-action:none;cursor:grab;
+    transform:
+      translateY(calc(var(--press) * 5px))
+      scaleX(calc(1 + var(--press) * .045))
+      scaleY(calc(1 - var(--press) * .055));
+    transition:transform .16s cubic-bezier(.2,.8,.3,1);
+    will-change:transform;
+    background:#fbe8dc;
+  }
+  .pet img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    filter:saturate(calc(1 + var(--press) * .18)) brightness(calc(1 + var(--press) * .05));
+    transition:filter .18s linear;
+    pointer-events:none;
+  }
+  /* finger light following the touch */
+  .light{
+    position:absolute;inset:-10%;pointer-events:none;
+    background:radial-gradient(circle at var(--lx) var(--ly), rgba(255,255,255,.75) 0%, rgba(255,236,224,.42) 22%, transparent 46%);
+    opacity:calc(.18 + var(--press) * .5);
+    mix-blend-mode:soft-light;
+    transition:opacity .2s linear;
+  }
+  /* blush */
+  .blush{position:absolute;width:26%;height:15%;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(255,120,150,.55),rgba(255,120,150,0) 70%);
+    filter:blur(6px);opacity:0;transition:opacity .25s linear;}
+  .blush.l{left:19%;top:52%;}
+  .blush.r{right:15%;top:52%;}
+  .bubble{
+    position:absolute;z-index:3;left:50%;top:-4px;
+    transform:translate(-50%,-100%) scale(.9) rotate(1.4deg);
+    background:#fff;color:var(--ink);
+    font-size:14.5px;line-height:1.45;font-weight:600;
+    padding:9px 14px;border-radius:16px;
+    box-shadow:0 8px 22px -8px rgba(190,120,110,.45);
+    white-space:nowrap;max-width:82vw;
+    opacity:0;pointer-events:none;
+    transition:opacity .2s ease, transform .25s cubic-bezier(.2,.9,.3,1.35);
+  }
+  .bubble::after{
+    content:"";position:absolute;left:50%;bottom:-6px;width:12px;height:12px;background:#fff;
+    transform:translateX(-50%) rotate(45deg);border-radius:2px;
+  }
+  .bubble.show{opacity:1;transform:translate(-50%,-100%) scale(1) rotate(1.4deg);}
+  /* hint ring */
+  .hintring{
+    position:absolute;left:50%;top:26%;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);
+    border:2px dashed rgba(255,255,255,.9);border-radius:50%;
+    box-shadow:0 0 26px rgba(255,190,205,.85), inset 0 0 18px rgba(255,255,255,.5);
+    pointer-events:none;animation:pulse 2.1s ease-in-out infinite;
+    display:grid;place-items:center;font-size:19px;
+  }
+  .hintring.gone{opacity:0;transition:opacity .5s ease;}
+  @keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.75}50%{transform:translate(-50%,-50%) scale(1.06);opacity:1}}
+  /* fx layer */
+  .fx{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:visible;}
+  .fx span{
+    position:absolute;font-size:20px;line-height:1;
+    animation:rise .95s cubic-bezier(.2,.7,.3,1) forwards;
+    will-change:transform,opacity;
+  }
+  @keyframes rise{
+    0%{transform:translate(-50%,-50%) scale(.4) rotate(0deg);opacity:0}
+    25%{opacity:1}
+    100%{transform:translate(-50%,-160%) scale(1.05) rotate(var(--rot,18deg));opacity:0}
+  }
+  .fx span.pop{animation:popout .7s ease-out forwards}
+  @keyframes popout{
+    0%{transform:scale(.3);opacity:0}
+    40%{transform:scale(1.15);opacity:1}
+    100%{transform:scale(.9) translateY(-14px);opacity:0}
+  }
+  /* ---------- footer ---------- */
+  footer{position:relative;z-index:2;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:9px;padding-bottom:2px;}
+  .meter{
+    width:min(64vw,260px);height:7px;border-radius:99px;background:#f3ddcf;overflow:hidden;
+    box-shadow:inset 0 1px 2px rgba(180,130,110,.22);
+  }
+  .meter i{
+    display:block;height:100%;width:0%;border-radius:99px;
+    background:linear-gradient(90deg,#ffc3a0,#ff9db3);
+    transition:width .45s cubic-bezier(.2,.9,.3,1);
+    box-shadow:0 0 10px rgba(255,140,165,.7);
+  }
+  .row{display:flex;align-items:center;gap:14px;}
+  .count{font-size:12.5px;color:var(--ink-soft);letter-spacing:.06em;}
+  .count b{color:var(--pink-deep);font-size:16px;font-variant-numeric:tabular-nums;
+    display:inline-block;transition:transform .2s cubic-bezier(.2,.9,.3,1.6);}
+  .count b.bump{transform:scale(1.35);}
+  .btn{
+    border:0;background:rgba(255,255,255,.75);color:var(--ink-soft);
+    width:30px;height:30px;border-radius:50%;font-size:14px;line-height:1;
+    box-shadow:0 3px 10px -4px rgba(180,120,110,.5);
+    display:grid;place-items:center;cursor:pointer;
+  }
+  .btn:active{transform:scale(.92);}
+  .sig{font-size:11px;color:#c4a496;letter-spacing:.18em;margin-top:2px;}
+  @media (prefers-reduced-motion: reduce){
+    .glow,.dust,.hintring{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg" id="bg">
+  <div class="glow"></div>
+</div>
+
+<header>
+  <div class="title">屈佳佳专用 <span>摸摸器</span></div>
+  <div class="hint" id="hint">手指划过它的头顶试试 ✋</div>
+</header>
+
+<div class="stage">
+  <div class="frame">
+    <div class="bubble" id="bubble">…</div>
+    <div class="pet" id="pet">
+      <img src="assets/pet.jpg?v=3" alt="小猫耳的他" draggable="false">
+      <div class="light" id="light"></div>
+      <div class="blush l" id="blushL"></div>
+      <div class="blush r" id="blushR"></div>
+    </div>
+    <div class="hintring" id="hintring">✋</div>
+    <div class="fx" id="fx"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="meter"><i id="meterFill"></i></div>
+  <div class="row">
+    <div class="count">被摸了 <b id="count">0</b> 次</div>
+    <button class="btn" id="soundBtn" aria-label="声音开关">🔊</button>
+  </div>
+  <div class="sig">— 仅供屈佳佳使用 —</div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const pet      = document.getElementById("pet");
+  const frame    = document.querySelector(".frame");
+  const fxLayer  = document.getElementById("fx");
+  const bubble   = document.getElementById("bubble");
+  const hint     = document.getElementById("hint");
+  const hintring = document.getElementById("hintring");
+  const countEl  = document.getElementById("count");
+  const meter    = document.getElementById("meterFill");
+  const blushL   = document.getElementById("blushL");
+  const blushR   = document.getElementById("blushR");
+  const soundBtn = document.getElementById("soundBtn");
+  const reduce   = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------------- background dust ---------------- */
+  (function makeDust(){
+    const bg = document.getElementById("bg");
+    const n = reduce ? 6 : 16;
+    for (let i = 0; i < n; i++){
+      const d = document.createElement("div");
+      d.className = "dust";
+      const s = 2 + Math.random() * 3.5;
+      d.style.width = d.style.height = s.toFixed(1) + "px";
+      d.style.left = (Math.random() * 100).toFixed(1) + "vw";
+      d.style.animationDuration = (9 + Math.random() * 9).toFixed(1) + "s";
+      d.style.animationDelay = (-Math.random() * 14).toFixed(1) + "s";
+      bg.appendChild(d);
+    }
+  })();
+
+  /* ---------------- state ---------------- */
+  const S = {
+    press: 0,          // 0..1 当前被摸强度
+    pressTarget: 0,
+    pats: +(localStorage.getItem("pat-count") || 0),
+    lastPatAt: 0,
+    lastMsgAt: 0,
+    active: new Map(), // pointerId -> {x,y,dist,t0}
+    idleTimer: 0,
+    sound: localStorage.getItem("pat-sound") !== "off",
+    started: false,
+  };
+  countEl.textContent = S.pats;
+
+  function setPress(v){
+    S.pressTarget = Math.max(0, Math.min(1, v));
+  }
+
+  /* ---------------- speech ---------------- */
+  const LINES = {
+    start: [
+      "唔……？", "嗯…佳佳？", "啊、等一……", "……哦，是摸头啊"
+    ],
+    pat: [
+      "唔…嗯。", "再来一下嘛。", "呼噜呼噜……", "舒服…", "别停呀。",
+      "嗯……就这里。", "嘿嘿……", "手好暖。", "（把头往前送了送）"
+    ],
+    rub: [
+      "啊——好舒服……", "就、就是那里…", "嗯……再揉一下。",
+      "呼噜噜噜……", "（眼睛眯起来了）", "轻、轻点啦……但别停。"
+    ],
+    gentle: [
+      "……好乖哦。", "你怎么这么会摸。", "嗯。就这样吧。"
+    ],
+    idle: [
+      "……不摸了吗。", "佳佳，走了？", "喂，还没摸够呢。", "（偷偷抬眼看你）"
+    ],
+    many: [
+      "佳佳，手不累呀？", "再摸要秃了！", "（但也没躲开）", "……随你摸吧。"
+    ]
+  };
+
+  function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function say(text, hold = 1500){
+    const now = performance.now();
+    if (now - S.lastMsgAt < 380) return;
+    S.lastMsgAt = now;
+    bubble.textContent = text;
+    bubble.classList.add("show");
+    clearTimeout(say._t);
+    say._t = setTimeout(() => bubble.classList.remove("show"), hold);
+  }
+
+  /* ---------------- fx ---------------- */
+  const ICONS = ["♥", "♥", "✦", "♬", "♥", "✧"];
+  function spawnFx(x, y, kind){
+    if (reduce) return;
+    if (fxLayer.childElementCount > 26) return;
+    const s = document.createElement("span");
+    s.textContent = kind || pick(ICONS);
+    s.className = kind === "pop" ? "pop" : "";
+    const colors = ["#ff8fa8", "#ffb59b", "#ffd9a0", "#ff9db3"];
+    s.style.color = colors[Math.floor(Math.random() * colors.length)];
+    s.style.left = x + "px";
+    s.style.top = y + "px";
+    s.style.setProperty("--rot", (Math.random() * 70 - 35).toFixed(0) + "deg");
+    s.style.fontSize = (14 + Math.random() * 12).toFixed(0) + "px";
+    fxLayer.appendChild(s);
+    s.addEventListener("animationend", () => s.remove(), { once: true });
+    setTimeout(() => s.remove(), 1400);
+  }
+
+  /* ---------------- sound: synthesized purr ---------------- */
+  const Sound = {
+    ctx: null, master: null, purrGain: null, lfo: null, ready: false,
+    init(){
+      if (this.ready) return;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = this.ctx = new AC();
+      const master = this.master = ctx.createGain();
+      master.gain.value = S.sound ? 0.9 : 0;
+      master.connect(ctx.destination);
+
+      // brown-ish noise -> 两级低通 -> 音量 -> 颤音（闷闷的呼噜）
+      const len = ctx.sampleRate * 2;
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < len; i++){
+        const white = Math.random() * 2 - 1;
+        last = (last + 0.02 * white) / 1.02;
+        d[i] = last * 2.6;
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buf; src.loop = true;
+
+      const hp = ctx.createBiquadFilter();
+      hp.type = "highpass"; hp.frequency.value = 38;
+      const lp1 = ctx.createBiquadFilter();
+      lp1.type = "lowpass"; lp1.frequency.value = 420; lp1.Q.value = 0.7;
+      const lp2 = ctx.createBiquadFilter();
+      lp2.type = "lowpass"; lp2.frequency.value = 300; lp2.Q.value = 0.5;
+
+      // 音量（只跟着被摸强度走，静置时为 0）
+      const purrGain = this.purrGain = ctx.createGain();
+      purrGain.gain.value = 0;
+
+      // 颤音节点单独放，避免 LFO 把静音也抖成噪声
+      const trem = ctx.createGain();
+      trem.gain.value = 0.6;
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 26;     // ~呼噜颗粒感
+      lfoGain.gain.value = 0.4;
+      lfo.connect(lfoGain).connect(trem.gain);
+      lfo.start();
+
+      src.connect(hp).connect(lp1).connect(lp2).connect(purrGain).connect(trem).connect(master);
+      src.start();
+      this.ready = true;
+    },
+    resume(){ if (this.ctx && this.ctx.state === "suspended") this.ctx.resume(); },
+    setOn(on){
+      S.sound = on;
+      localStorage.setItem("pat-sound", on ? "on" : "off");
+      soundBtn.textContent = on ? "🔊" : "🔇";
+      if (this.master){
+        this.master.gain.setTargetAtTime(on ? 0.9 : 0, this.ctx.currentTime, 0.08);
+      }
+    },
+    purr(level){
+      if (!this.ready) return;
+      const t = this.ctx.currentTime;
+      const target = level < 0.03 ? 0 : Math.min(0.2, 0.03 + level * 0.17);
+      this.purrGain.gain.setTargetAtTime(S.sound ? target : 0, t, 0.16);
+    },
+    blip(){
+      if (!this.ready || !S.sound) return;
+      const t = this.ctx.currentTime;
+      const o = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      o.type = "triangle";
+      o.frequency.setValueAtTime(520 + Math.random() * 90, t);
+      o.frequency.exponentialRampToValueAtTime(760, t + 0.09);
+      g.gain.setValueAtTime(0.0, t);
+      g.gain.linearRampToValueAtTime(0.03, t + 0.014);
+      g.gain.exponentialRampToValueAtTime(0.0006, t + 0.18);
+      o.connect(g).connect(this.master);
+      o.start(t); o.stop(t + 0.18);
+    }
+  };
+  soundBtn.textContent = S.sound ? "🔊" : "🔇";
+  soundBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    Sound.init(); Sound.resume();
+    Sound.setOn(!S.sound);
+    if (S.sound) Sound.blip();
+  });
+
+  /* ---------------- pat interaction ---------------- */
+  function pointInPet(e){
+    const r = pet.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top, r };
+  }
+  function updateLight(x, y){
+    pet.style.setProperty("--lx", x + "px");
+    pet.style.setProperty("--ly", y + "px");
+  }
+  function frameXY(x, y){
+    const f = frame.getBoundingClientRect();
+    const p = pet.getBoundingClientRect();
+    return { x: x + (p.left - f.left), y: y + (p.top - f.top) };
+  }
+
+  function onDown(e){
+    const p = pointInPet(e);
+    S.active.set(e.pointerId, { x: p.x, y: p.y, dist: 0, t: performance.now(), moved: 0 });
+    try { pet.setPointerCapture(e.pointerId); } catch(_) {}
+    updateLight(p.x, p.y);
+    setPress(0.45);
+    Sound.init(); Sound.resume();
+    Sound.blip();
+
+    if (!S.started){
+      S.started = true;
+      hint.classList.add("gone");
+      hintring.classList.add("gone");
+      setTimeout(() => hintring.remove(), 600);
+      say(pick(LINES.start), 1600);
+    }
+    const f = frameXY(p.x, p.y);
+    spawnFx(f.x, f.y, "pop");
+    clearTimeout(S.idleTimer);
+    S.idleTimer = setTimeout(() => { say(pick(LINES.idle), 2200); }, 6000);
+    e.preventDefault();
+  }
+
+  function onMove(e){
+    const a = S.active.get(e.pointerId);
+    if (!a) return;
+    const p = pointInPet(e);
+    const dx = p.x - a.x, dy = p.y - a.y;
+    const d = Math.hypot(dx, dy);
+    a.x = p.x; a.y = p.y; a.dist += d; a.moved += d;
+    updateLight(p.x, p.y);
+
+    if (d > 0.4){
+      setPress(Math.min(1, 0.45 + a.dist / 320));
+      // sparkle trail every ~30px of travel
+      if (a.dist - (a.lastSpawn || 0) > 34 && a.moved > 10){
+        a.lastSpawn = a.dist;
+        const f = frameXY(p.x, p.y);
+        spawnFx(f.x, f.y);
+      }
+      if (a.moved > 55 && performance.now() - (a.lastSay || 0) > 2200){
+        a.lastSay = performance.now();
+        say(Math.random() < 0.65 ? pick(LINES.rub) : pick(LINES.pat), 1700);
+      }
+    }
+    e.preventDefault();
+  }
+
+  function onUp(e){
+    const a = S.active.get(e.pointerId);
+    S.active.delete(e.pointerId);
+    if (!a) return;
+    const dt = performance.now() - a.t;
+    const isTap = a.moved < 8 && dt < 400;
+    const isRub = a.moved > 55;
+    if (isTap || isRub || a.moved > 4){
+      bumpCount(isRub ? 2 : 1);
+      setPress(isTap ? 0.75 : 1);
+    }
+    if (isTap) say(pick(LINES.pat), 1400);
+    else if (isRub && Math.random() < 0.5) say(pick(LINES.gentle), 1700);
+    if (navigator.vibrate) navigator.vibrate(isRub ? [10] : 8);
+  }
+
+  function bumpCount(n){
+    S.pats += n;
+    S.lastPatAt = performance.now();
+    localStorage.setItem("pat-count", S.pats);
+    countEl.textContent = S.pats;
+    countEl.classList.add("bump");
+    setTimeout(() => countEl.classList.remove("bump"), 180);
+
+    const lvl = Math.min(1, S.pats / 60);
+    meter.style.width = (lvl * 100).toFixed(1) + "%";
+
+    if (S.pats % 25 === 0) say(pick(LINES.many), 2000);
+  }
+
+  pet.addEventListener("pointerdown", onDown);
+  pet.addEventListener("pointermove", onMove);
+  pet.addEventListener("pointerup", onUp);
+  pet.addEventListener("pointercancel", onUp);
+  pet.addEventListener("pointerleave", (e) => {
+    if (!S.active.has(e.pointerId)) setPress(0);
+  });
+  pet.addEventListener("contextmenu", (e) => e.preventDefault());
+  document.addEventListener("gesturestart", (e) => e.preventDefault());
+
+  /* fallback for very old webviews without Pointer Events */
+  if (!window.PointerEvent){
+    const fake = (t) => ({
+      pointerId: t.identifier, clientX: t.clientX, clientY: t.clientY,
+      preventDefault(){}, pointerType: "touch"
+    });
+    pet.addEventListener("touchstart", (e) => {
+      for (const t of e.changedTouches) onDown(fake(t));
+      e.preventDefault();
+    }, { passive: false });
+    pet.addEventListener("touchmove", (e) => {
+      for (const t of e.changedTouches) onMove(fake(t));
+      e.preventDefault();
+    }, { passive: false });
+    const end = (e) => {
+      for (const t of e.changedTouches) onUp(fake(t));
+      e.preventDefault();
+    };
+    pet.addEventListener("touchend", end, { passive: false });
+    pet.addEventListener("touchcancel", end, { passive: false });
+  }
+
+  /* ---------------- rAF loop ---------------- */
+  let raf = 0;
+  const loop = () => {
+    S.press += (S.pressTarget - S.press) * 0.22;
+    if (!S.active.size) S.pressTarget *= 0.955;
+    if (S.press < 0.004) S.press = S.pressTarget = 0;
+
+    pet.style.setProperty("--press", S.press.toFixed(4));
+    frame.style.transform = "rotate(" + (-1.4 + S.press * 1.1).toFixed(2) + "deg)";
+    const blush = Math.max(0, (S.press - 0.35) / 0.65);
+    blushL.style.opacity = blush.toFixed(3);
+    blushR.style.opacity = blush.toFixed(3);
+    Sound.purr(S.press);
+    raf = requestAnimationFrame(loop);
+  };
+  raf = requestAnimationFrame(loop);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden){ cancelAnimationFrame(raf); S.press = S.pressTarget = 0; Sound.purr(0); }
+    else raf = requestAnimationFrame(loop);
+  });
+
+  /* init meter */
+  meter.style.width = (Math.min(1, S.pats / 60) * 100).toFixed(1) + "%";
+
+  /* first-idle nudge */
+  setTimeout(() => {
+    if (!S.started) say("……在看我吗？", 2000);
+  }, 5000);
+})();
+</script>
+</body>
+</html>
