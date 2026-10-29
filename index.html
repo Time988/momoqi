@@ -7,6 +7,19 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="摸摸器">
+<meta property="og:title" content="屈佳佳专用摸摸器">
+<meta property="og:description" content="手指划过它的头顶，它会脸红、打呼噜、冒心心。">
+<meta property="og:image" content="https://time988.github.io/momoqi/assets/og.jpg">
+<meta property="og:url" content="https://time988.github.io/momoqi/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="屈佳佳专用摸摸器">
+<meta name="twitter:description" content="手指划过它的头顶，它会脸红、打呼噜、冒心心。">
+<meta name="twitter:image" content="https://time988.github.io/momoqi/assets/og.jpg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="摸摸器">
 <title>屈佳佳专用摸摸器</title>
 <style>
   :root{
@@ -184,6 +197,30 @@
   }
   .btn:active{transform:scale(.92);}
   .sig{font-size:11px;color:#c4a496;letter-spacing:.18em;margin-top:2px;}
+  /* ---------- 添加到主屏幕提示 ---------- */
+  .a2hs{
+    position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 12px);
+    transform:translate(-50%,150%);
+    width:calc(100% - 32px);max-width:420px;z-index:9;
+    background:#fff;border-radius:18px;
+    box-shadow:0 14px 34px -12px rgba(190,120,110,.55);
+    padding:11px 12px;transition:transform .45s cubic-bezier(.2,.9,.3,1.2);
+  }
+  .a2hs.show{transform:translate(-50%,0);}
+  .a2hs-in{display:flex;align-items:center;gap:8px;}
+  .a2hs-main{
+    flex:1;border:0;background:transparent;text-align:left;cursor:pointer;
+    font-size:13px;font-weight:600;color:var(--ink);padding:2px 2px;line-height:1.4;
+  }
+  .a2hs-x{
+    border:0;background:#f6e6dc;color:#a3806f;width:24px;height:24px;border-radius:50%;
+    font-size:14px;line-height:1;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;
+  }
+  .a2hs-tip{
+    margin-top:9px;padding-top:9px;border-top:1px dashed #f0ddd2;
+    font-size:12.5px;line-height:1.6;color:var(--ink-soft);
+  }
+  @media (prefers-reduced-motion: reduce){ .a2hs{transition:none} }
   @media (prefers-reduced-motion: reduce){
     .glow,.dust,.hintring{animation:none}
   }
@@ -566,11 +603,46 @@
   /* init meter */
   meter.style.width = (Math.min(1, S.pats / 60) * 100).toFixed(1) + "%";
 
+
+  /* ---------------- 添加到主屏幕提示 ---------------- */
+  (function a2hs(){
+    const bar = document.getElementById("a2hs");
+    const btn = document.getElementById("a2hsBtn");
+    const x   = document.getElementById("a2hsX");
+    const tip = document.getElementById("a2hsTip");
+    if (!bar) return;
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (standalone || !mobile || localStorage.getItem("a2hs-off") === "1") return;
+
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    tip.textContent = isIOS
+      ? "1. 点底部「分享」  2. 选「添加到主屏幕」  3. 右上「添加」"
+      : "1. 点右上「⋮」菜单  2. 选「添加到主屏幕」  3. 确认「添加」";
+
+    setTimeout(() => bar.classList.add("show"), 5200);
+
+    btn.addEventListener("click", () => { tip.hidden = !tip.hidden; });
+    x.addEventListener("click", () => {
+      bar.classList.remove("show");
+      localStorage.setItem("a2hs-off", "1");
+      setTimeout(() => bar.remove(), 500);
+    });
+  })();
+
   /* first-idle nudge */
   setTimeout(() => {
     if (!S.started) say("……在看我吗？", 2000);
   }, 5000);
 })();
 </script>
+
+<div class="a2hs" id="a2hs">
+  <div class="a2hs-in">
+    <button class="a2hs-main" id="a2hsBtn">📌 加到主屏幕，以后点一下就能摸</button>
+    <button class="a2hs-x" id="a2hsX" aria-label="关闭">×</button>
+  </div>
+  <div class="a2hs-tip" id="a2hsTip" hidden></div>
+</div>
 </body>
 </html>
