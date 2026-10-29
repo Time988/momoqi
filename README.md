@@ -31,7 +31,8 @@ bash pet/start.sh
 
 ## 可调的地方（都在 index.html 里）
 
-- 台词：`LINES` 对象，`start / pat / rub / gentle / idle / many` 六种场景
+- 台词：`LINES` 对象，`start / pat / rub / gentle / idle / many / miss / care` 八种场景
+- 思念·关心台词出现的概率：`pickMix(base, extra, p)` 里的 `p`（各调用点）
 - 动作幅度：`:root` 里 `--press` 相关的 `scaleX / scaleY`
 - 摸摸进度条满格次数：`Math.min(1, S.pats / 60)`
 - 呼噜音色/音量：`Sound.init` 里两个 `lowpass.frequency` 与 `purr()` 里的 `0.2`

@@ -299,6 +299,7 @@
     pressTarget: 0,
     pats: +(localStorage.getItem("pat-count") || 0),
     lastPatAt: 0,
+    lastTouch: 0,
     lastMsgAt: 0,
     active: new Map(), // pointerId -> {x,y,dist,t0}
     idleTimer: 0,
@@ -332,10 +333,22 @@
     ],
     many: [
       "佳佳，手不累呀？", "再摸要秃了！", "（但也没躲开）", "……随你摸吧。"
+    ],
+    miss: [
+      "又想我了嘛，佳佳。", "我也在想你呀。", "……有点想你。", "等我回来。",
+      "你一来，我就不困了。", "刚刚还在想你。", "（其实一直在等）", "别走那么快。"
+    ],
+    care: [
+      "不要不开心哦。", "今天累不累？", "有我在呢。", "记得吃饭，别糊弄。",
+      "早点睡，别熬夜。", "手这么凉，多穿点。", "别硬撑，想哭就哭。", "你先照顾好自己。"
     ]
   };
 
   function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+  // 按概率混入思念 / 关心的话
+  function pickMix(base, extra, p){
+    return Math.random() < p ? pick(extra) : pick(base);
+  }
 
   function say(text, hold = 1500){
     const now = performance.now();
@@ -478,17 +491,23 @@
     Sound.init(); Sound.resume();
     Sound.blip();
 
+    const now = Date.now();
+    if (now - S.lastTouch > 45000 && Math.random() < 0.7){
+      say(pick(LINES.miss), 2200);
+    }
+    S.lastTouch = now;
+
     if (!S.started){
       S.started = true;
       hint.classList.add("gone");
       hintring.classList.add("gone");
       setTimeout(() => hintring.remove(), 600);
-      say(pick(LINES.start), 1600);
+      say(pickMix(LINES.start, LINES.miss, 0.45), 1700);
     }
     const f = frameXY(p.x, p.y);
     spawnFx(f.x, f.y, "pop");
     clearTimeout(S.idleTimer);
-    S.idleTimer = setTimeout(() => { say(pick(LINES.idle), 2200); }, 6000);
+    S.idleTimer = setTimeout(() => { say(pickMix(LINES.idle, LINES.miss, 0.6), 2600); }, 6000);
     e.preventDefault();
   }
 
@@ -511,7 +530,7 @@
       }
       if (a.moved > 55 && performance.now() - (a.lastSay || 0) > 2200){
         a.lastSay = performance.now();
-        say(Math.random() < 0.65 ? pick(LINES.rub) : pick(LINES.pat), 1700);
+        say(Math.random() < 0.6 ? pickMix(LINES.rub, LINES.care, 0.32) : pickMix(LINES.pat, LINES.miss, 0.3), 1800);
       }
     }
     e.preventDefault();
@@ -528,8 +547,8 @@
       bumpCount(isRub ? 2 : 1);
       setPress(isTap ? 0.75 : 1);
     }
-    if (isTap) say(pick(LINES.pat), 1400);
-    else if (isRub && Math.random() < 0.5) say(pick(LINES.gentle), 1700);
+    if (isTap) say(pickMix(LINES.pat, LINES.miss, 0.35), 1500);
+    else if (isRub && Math.random() < 0.5) say(pickMix(LINES.gentle, LINES.care, 0.5), 1900);
     if (navigator.vibrate) navigator.vibrate(isRub ? [10] : 8);
   }
 
@@ -544,7 +563,7 @@
     const lvl = Math.min(1, S.pats / 60);
     meter.style.width = (lvl * 100).toFixed(1) + "%";
 
-    if (S.pats % 25 === 0) say(pick(LINES.many), 2000);
+    if (S.pats % 25 === 0) say(pickMix(LINES.many, LINES.care, 0.45), 2200);
   }
 
   pet.addEventListener("pointerdown", onDown);
@@ -632,7 +651,7 @@
 
   /* first-idle nudge */
   setTimeout(() => {
-    if (!S.started) say("……在看我吗？", 2000);
+    if (!S.started) say(pickMix(["……在看我吗？", "……来了呀。"], LINES.miss, 0.6), 2400);
   }, 5000);
 })();
 </script>
