@@ -221,6 +221,105 @@
     font-size:12.5px;line-height:1.6;color:var(--ink-soft);
   }
   @media (prefers-reduced-motion: reduce){ .a2hs{transition:none} }
+  /* ---------- 彩蛋 · 每满 99 次 ---------- */
+  .bubble.egg{
+    color:#a4691a;
+    background:linear-gradient(180deg,#fffdf6,#fff3d5);
+    box-shadow:0 10px 30px -8px rgba(214,150,40,.55), 0 0 0 1px rgba(255,215,130,.9) inset;
+  }
+  .bubble.egg::after{ background:#fff8e6; }
+  .flashgold{
+    position:fixed;inset:0;pointer-events:none;z-index:15;opacity:0;
+    background:radial-gradient(circle at 50% 42%, rgba(255,232,170,.9), rgba(255,196,120,.28) 38%, transparent 64%);
+  }
+  .flashgold.on{animation:goldflash 1.5s ease-out;}
+  @keyframes goldflash{0%{opacity:0}16%{opacity:1}100%{opacity:0}}
+  .badge-pop{
+    position:fixed;left:50%;top:44%;z-index:16;pointer-events:none;
+    font-weight:700;color:#b97b18;font-size:25px;letter-spacing:.08em;
+    text-shadow:0 0 18px rgba(255,205,120,.95), 0 2px 6px rgba(180,120,40,.35);
+    transform:translate(-50%,-50%) scale(.6);
+    animation:badgepop 2.4s cubic-bezier(.2,.9,.3,1.3) forwards;
+  }
+  @keyframes badgepop{
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}
+    18%{opacity:1;transform:translate(-50%,-52%) scale(1.06)}
+    70%{opacity:1}
+    100%{opacity:0;transform:translate(-50%,-72%) scale(1)}
+  }
+
+  /* ---------- 告白 / 终极彩蛋 遮罩 ---------- */
+  .veil{
+    position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:16px;padding:26px;text-align:center;
+    background:radial-gradient(circle at 50% 38%, rgba(255,228,238,.72), rgba(255,198,214,.62) 34%, rgba(255,234,222,.84) 74%);
+    opacity:0;visibility:hidden;transition:opacity .7s ease, visibility .7s;
+    -webkit-backdrop-filter:blur(13px) saturate(1.08);
+    backdrop-filter:blur(13px) saturate(1.08);
+  }
+  .veil.show{opacity:1;visibility:visible;}
+  .veil.hearts{
+    background:radial-gradient(circle at 50% 38%, rgba(255,216,228,.74), rgba(255,170,190,.6) 34%, rgba(255,214,196,.86) 76%);
+  }
+  .veil-glow{
+    position:absolute;left:50%;top:34%;width:min(94vw,540px);aspect-ratio:1;transform:translate(-50%,-50%);
+    background:radial-gradient(circle,rgba(255,255,255,.9),rgba(255,180,200,.35) 42%,transparent 66%);
+    filter:blur(10px);animation:breathe 6s ease-in-out infinite;pointer-events:none;
+  }
+  .veil-line{
+    position:relative;z-index:2;max-width:20em;min-height:2.6em;
+    display:flex;align-items:center;justify-content:center;
+    font-size:21px;line-height:1.65;font-weight:600;color:#7a4a45;letter-spacing:.04em;
+    opacity:0;transform:translateY(10px);
+    transition:opacity .55s ease, transform .55s cubic-bezier(.2,.9,.3,1.2);
+    text-shadow:0 1px 0 rgba(255,255,255,.75);
+  }
+  .veil-line.on{opacity:1;transform:none;}
+  .veil-line.big{font-size:27px;color:#c2415c;}
+  .veil-actions{position:relative;z-index:3;display:flex;gap:18px;align-items:center;margin-top:4px;}
+  .vbtn{
+    border:0;cursor:pointer;font-family:inherit;font-weight:700;letter-spacing:.08em;border-radius:999px;
+    transition:transform .3s cubic-bezier(.2,.9,.3,1.3), box-shadow .3s ease, opacity .3s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .vbtn-no{
+    background:#fff;color:#e0576a;border:2px solid #f3b6bf;
+    padding:13px 26px;font-size:16px;box-shadow:0 8px 20px -10px rgba(200,80,100,.6);
+  }
+  .vbtn-yes{
+    background:linear-gradient(180deg,#5fd08a,#2fb06a);color:#fff;padding:15px 34px;font-size:17px;
+    box-shadow:0 12px 26px -10px rgba(20,140,80,.75), 0 0 0 6px rgba(255,255,255,.5);
+    --grow:1;
+    animation:yesPulse 2.2s ease-in-out infinite;
+  }
+  @keyframes yesPulse{
+    0%,100%{transform:scale(var(--grow,1))}
+    50%{transform:scale(calc(var(--grow,1) * 1.045))}
+  }
+  .vbtn:active{transform:scale(.94);}
+  .vbtn-continue{
+    background:#fff;color:#c2415c;padding:14px 30px;font-size:16px;border:2px solid #f7c3cd;
+    box-shadow:0 10px 24px -10px rgba(190,80,100,.6);
+  }
+  .vbtn[hidden]{display:none !important;}
+  .veil-actions[hidden]{display:none !important;}
+  .rain{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;}
+  .rain span{position:absolute;top:-8vh;font-size:18px;animation:fall linear forwards;}
+  @keyframes fall{
+    0%{transform:translateY(0) rotate(0);opacity:0}
+    12%{opacity:.95}
+    100%{transform:translateY(120vh) rotate(26deg);opacity:0}
+  }
+  .veil-face{
+    position:relative;z-index:2;width:116px;height:116px;border-radius:50%;overflow:hidden;
+    border:3px solid rgba(255,255,255,.94);
+    box-shadow:0 16px 36px -14px rgba(200,80,110,.65), 0 0 0 9px rgba(255,255,255,.22);
+    animation:faceIn .9s cubic-bezier(.2,.9,.3,1.25) both;
+  }
+  .veil-face img{width:100%;height:100%;object-fit:cover;display:block;}
+  @keyframes faceIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:none}}
+  .veil-sub{position:relative;z-index:2;font-size:12px;color:#c08c9c;letter-spacing:.24em;}
+
   @media (prefers-reduced-motion: reduce){
     .glow,.dust,.hintring{animation:none}
   }
@@ -259,6 +358,31 @@
   </div>
   <div class="sig">— 仅供屈佳佳使用 —</div>
 </footer>
+<div class="flashgold" id="flashgold"></div>
+
+<div class="veil" id="confess">
+  <div class="veil-glow"></div>
+  <div class="rain" id="confessRain"></div>
+  <div class="veil-face"><img src="assets/pet.jpg?v=3" alt=""></div>
+  <div class="veil-sub">520 次 · 佳佳</div>
+  <div class="veil-line" id="confessLine"></div>
+  <div class="veil-actions" id="confessActions" hidden>
+    <button class="vbtn vbtn-no" id="btnRefuse">不愿意</button>
+    <button class="vbtn vbtn-yes" id="btnAccept">我愿意</button>
+  </div>
+  <button class="vbtn vbtn-continue" id="btnResume" hidden>继续摸头</button>
+</div>
+
+<div class="veil" id="ultimate">
+  <div class="veil-glow"></div>
+  <div class="rain" id="ultimateRain"></div>
+  <div class="veil-face"><img src="assets/pet.jpg?v=3" alt=""></div>
+  <div class="veil-sub">一万次 · 彩蛋</div>
+  <div class="veil-line big on" id="ultimateLine"></div>
+  <button class="vbtn vbtn-continue" id="btnUltEnd">继续摸头</button>
+</div>
+
+
 
 <script>
 (() => {
@@ -304,6 +428,8 @@
     active: new Map(), // pointerId -> {x,y,dist,t0}
     idleTimer: 0,
     sound: localStorage.getItem("pat-sound") !== "off",
+    locked: false,
+    soundUnlocked: false,
     started: false,
   };
   countEl.textContent = S.pats;
@@ -313,35 +439,43 @@
   }
 
   /* ---------------- speech ---------------- */
+  // 来自语料库定稿：统一不加句号，保留逗号 / 省略号 / 问号
   const LINES = {
-    start: [
-      "唔……？", "嗯…佳佳？", "啊、等一……", "……哦，是摸头啊"
-    ],
+    start: ["还没准备好呢", "头发要乱了啦"],
     pat: [
-      "唔…嗯。", "再来一下嘛。", "呼噜呼噜……", "舒服…", "别停呀。",
-      "嗯……就这里。", "嘿嘿……", "手好暖。", "（把头往前送了送）"
+      "再来一下嘛", "还没摸够呢", "再摸两下再走", "（把头往你手心蹭了蹭）", "……算了，你摸吧"
     ],
-    rub: [
-      "啊——好舒服……", "就、就是那里…", "嗯……再揉一下。",
-      "呼噜噜噜……", "（眼睛眯起来了）", "轻、轻点啦……但别停。"
-    ],
-    gentle: [
-      "……好乖哦。", "你怎么这么会摸。", "嗯。就这样吧。"
-    ],
+    rub: ["今天能不能多待一会儿", "还没摸够呢", "再来一下嘛", "再摸一下，就一下"],
+    gentle: ["刚刚还在想你", "我也在想你呀", "……有点想你"],
     idle: [
-      "……不摸了吗。", "佳佳，走了？", "喂，还没摸够呢。", "（偷偷抬眼看你）"
+      "……不摸了吗", "喂，还没摸够呢", "就这么走了啊", "（偷偷抬眼看你）",
+      "你走了，我会想你的", "下次再来呀客官"
     ],
-    many: [
-      "佳佳，手不累呀？", "再摸要秃了！", "（但也没躲开）", "……随你摸吧。"
-    ],
+    many: ["头要摸秃啦", "佳佳，手累不累呀", "哼，谁准你摸的", "不要摸了啦，我又不是小猫"],
     miss: [
-      "又想我了嘛，佳佳。", "我也在想你呀。", "……有点想你。", "等我回来。",
-      "你一来，我就不困了。", "刚刚还在想你。", "（其实一直在等）", "别走那么快。"
+      "又想我了嘛，佳佳", "我也在想你呀", "……有点想你", "等我回来",
+      "你一来，我就不困啦", "刚刚还在想你", "（其实一直在等你）", "好想见你", "好想你呀",
+      "还以为你把我忘了呢", "想你的话，可以摸我吗", "你不在的时候，我就这样静静等你",
+      "想我就摸摸头，很快我就回来啦"
     ],
     care: [
-      "不要不开心哦。", "今天累不累？", "有我在呢。", "记得吃饭，别糊弄。",
-      "早点睡，别熬夜。", "手这么凉，多穿点。", "别硬撑，想哭就哭。", "你先照顾好自己。"
-    ]
+      "不要不开心哦", "今天累不累呀？", "有我在呢", "记得吃饭哦，别饿坏胃了",
+      "早点睡，别熬夜哦", "手好凉呀，记得多穿衣服", "别硬撑哦，想哭就哭吧",
+      "眼睛红红的，没睡好嘛", "最近是不是瘦了呀", "好可爱的佳佳", "没关系的，有我在呢"
+    ],
+    reunion: ["……好久不见", "你终于来啦", "我都快忘了被摸的感觉了……", "哼，还以为你不来了"],
+    // 彩蛋：每满 99 次轮换
+    egg: ["（咳咳）姐姐～", "是不是就等着这句姐姐呢", "摸了我的头可就是我的人咯"],
+    // 告白彩蛋：分层台词
+    confess: [
+      "佳佳", "有件事，想跟你说很久了", "你摸了我 520 次",
+      "每一次，我都在想同一件事", "想以后都由你来摸", "佳佳，我爱你", "做我女朋友吧"
+    ],
+    refuse: [
+      "再考虑一下嘛", "你真的忍心拒绝吗", "求求了……", "不要嘛……", "就给我一次机会好不好"
+    ],
+    accept: ["……真的？", "那说好了", "以后只准你摸", "谢谢你，佳佳"],
+    ultimate: ["已经摸了一万次了，什么时候嫁给我呀"]
   };
 
   function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
@@ -350,14 +484,18 @@
     return Math.random() < p ? pick(extra) : pick(base);
   }
 
-  function say(text, hold = 1500){
+  function say(text, hold = 1500, cls, force){
     const now = performance.now();
-    if (now - S.lastMsgAt < 380) return;
+    if (!force && now - S.lastMsgAt < 380) return;
     S.lastMsgAt = now;
     bubble.textContent = text;
+    bubble.classList.toggle("egg", cls === "egg");
     bubble.classList.add("show");
     clearTimeout(say._t);
-    say._t = setTimeout(() => bubble.classList.remove("show"), hold);
+    say._t = setTimeout(() => {
+      bubble.classList.remove("show");
+      bubble.classList.remove("egg");
+    }, hold);
   }
 
   /* ---------------- fx ---------------- */
@@ -483,6 +621,7 @@
   }
 
   function onDown(e){
+    if (S.locked) return;
     const p = pointInPet(e);
     S.active.set(e.pointerId, { x: p.x, y: p.y, dist: 0, t: performance.now(), moved: 0 });
     try { pet.setPointerCapture(e.pointerId); } catch(_) {}
@@ -490,6 +629,7 @@
     setPress(0.45);
     Sound.init(); Sound.resume();
     Sound.blip();
+    if (!S.soundUnlocked){ S.soundUnlocked = true; try { Music.unlock(); } catch(_){} }
 
     const now = Date.now();
     if (now - S.lastTouch > 45000 && Math.random() < 0.7){
@@ -512,6 +652,7 @@
   }
 
   function onMove(e){
+    if (S.locked) return;
     const a = S.active.get(e.pointerId);
     if (!a) return;
     const p = pointInPet(e);
@@ -537,6 +678,7 @@
   }
 
   function onUp(e){
+    if (S.locked){ S.active.clear(); return; }
     const a = S.active.get(e.pointerId);
     S.active.delete(e.pointerId);
     if (!a) return;
@@ -553,6 +695,7 @@
   }
 
   function bumpCount(n){
+    const prev = S.pats;
     S.pats += n;
     S.lastPatAt = performance.now();
     localStorage.setItem("pat-count", S.pats);
@@ -563,7 +706,37 @@
     const lvl = Math.min(1, S.pats / 60);
     meter.style.width = (lvl * 100).toFixed(1) + "%";
 
-    if (S.pats % 25 === 0) say(pickMix(LINES.many, LINES.care, 0.45), 2200);
+    if (S.pats % 25 === 0 && !S.locked) say(pickMix(LINES.many, LINES.care, 0.45), 2200);
+
+    /* ---- 彩蛋判定（按跨度算，rub 一次 +2 也不会漏） ---- */
+    const crossed = (t) => prev < t && S.pats >= t;
+
+    if (crossed(9999) && localStorage.getItem("ultimate-seen") !== "yes"){
+      setTimeout(() => Ultimate.open(), 300);
+      return;
+    }
+    if (crossed(520) && localStorage.getItem("confess") !== "yes"){
+      setTimeout(() => Confess.open(), 320);
+      return;
+    }
+    const hit = eggHit(prev, S.pats);
+    if (hit){ setTimeout(() => egg99(hit), 260); return; }
+
+    // 中途关掉页面后，10 分钟内没处理完的告白会在下一次摸头时回来
+    if (!Confess.active && !Ultimate.active
+        && localStorage.getItem("confess") !== "yes"
+        && S.pats >= 520
+        && Date.now() - (+localStorage.getItem("confess-seen") || 0) > 6e5){
+      setTimeout(() => Confess.open(), 400);
+    }
+  }
+
+  function eggHit(prev, next){
+    for (let v = prev + 1; v <= next; v++){
+      if (v === 9999 || v === 520) continue;
+      if (v % 100 === 99 && localStorage.getItem("egg-" + v) !== "1") return v;
+    }
+    return 0;
   }
 
   pet.addEventListener("pointerdown", onDown);
@@ -610,7 +783,7 @@
     const blush = Math.max(0, (S.press - 0.35) / 0.65);
     blushL.style.opacity = blush.toFixed(3);
     blushR.style.opacity = blush.toFixed(3);
-    Sound.purr(S.press);
+    Sound.purr(S.locked ? 0 : S.press);
     raf = requestAnimationFrame(loop);
   };
   raf = requestAnimationFrame(loop);
@@ -649,12 +822,233 @@
     });
   })();
 
+  /* ================= 彩蛋 · 告白 ================= */
+  const flashEl   = document.getElementById("flashgold");
+  const confVeil  = document.getElementById("confess");
+  const confLine  = document.getElementById("confessLine");
+  const confActs  = document.getElementById("confessActions");
+  const btnRefuse = document.getElementById("btnRefuse");
+  const btnAccept = document.getElementById("btnAccept");
+  const btnResume = document.getElementById("btnResume");
+  const ultVeil   = document.getElementById("ultimate");
+  const ultLine   = document.getElementById("ultimateLine");
+  const btnUltEnd = document.getElementById("btnUltEnd");
+
+  const Music = {
+    el: null, raf: 0,
+    init(){ if (this.el) return; const a = new Audio("assets/confession.m4a"); a.loop = true; a.preload = "auto"; a.volume = 0; this.el = a; },
+    fade(to, sec){
+      this.init(); const a = this.el, from = a.volume, t0 = performance.now();
+      cancelAnimationFrame(this.raf);
+      const step = (t) => {
+        const k = Math.min(1, (t - t0) / (sec * 1000));
+        a.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+        if (k < 1) this.raf = requestAnimationFrame(step);
+      };
+      this.raf = requestAnimationFrame(step);
+    },
+    play(){ this.init(); const pr = this.el.play(); if (pr && pr.catch) pr.catch(() => {}); this.fade(0.62, 2.8); },
+    unlock(){
+      this.init();
+      const a = this.el;
+      if (a.dataset.unlocked) return;
+      a.muted = true;
+      const pr = a.play();
+      if (pr && pr.then) pr.then(() => {
+        setTimeout(() => { try { a.pause(); a.currentTime = 0; } catch(_){} a.muted = false; a.dataset.unlocked = "1"; }, 80);
+      }).catch(() => { a.muted = false; });
+    },
+    stop(){ if (!this.el) return; this.fade(0, 1.6); setTimeout(() => { try { this.el.pause(); this.el.currentTime = 0; } catch(_){} }, 1900); }
+  };
+
+  function chime(){
+    Sound.init(); if (!Sound.ctx || !S.sound) return;
+    const ctx = Sound.ctx, t = ctx.currentTime, notes = [784, 988, 1175, 1568];
+    notes.forEach((f, i) => {
+      const d = i * 0.11, o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "triangle"; o.frequency.value = f;
+      g.gain.setValueAtTime(0, t + d);
+      g.gain.linearRampToValueAtTime(0.05, t + d + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0006, t + d + 0.55);
+      o.connect(g).connect(Sound.master || ctx.destination);
+      o.start(t + d); o.stop(t + d + 0.6);
+    });
+  }
+
+  let rainTimer = 0;
+  function stopRain(){ if (rainTimer){ clearInterval(rainTimer); rainTimer = 0; } }
+  function startRain(el, emojis, n){
+    if (!el) return;
+    stopRain();
+    el.innerHTML = "";
+    const total = reduce ? Math.min(n || 10, 8) : (n || 18);
+    const drop = () => {
+      if (el.childElementCount > total) el.firstElementChild && el.firstElementChild.remove();
+      const sp = document.createElement("span");
+      sp.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      sp.style.left = (Math.random() * 100).toFixed(1) + "%";
+      sp.style.animationDuration = (7 + Math.random() * 6).toFixed(1) + "s";
+      sp.style.fontSize = (13 + Math.random() * 15).toFixed(0) + "px";
+      sp.style.color = ["#e0567c", "#d94f6e", "#c98a1e", "#e8748f"][Math.floor(Math.random() * 4)];
+      sp.style.textShadow = "0 0 10px rgba(255,255,255,.85)";
+      el.appendChild(sp);
+      sp.addEventListener("animationend", () => sp.remove(), { once: true });
+    };
+    for (let i = 0; i < total; i++){
+      drop();
+      const last = el.lastElementChild;
+      if (last) last.style.animationDelay = (-Math.random() * 7).toFixed(1) + "s";
+    }
+    rainTimer = setInterval(drop, reduce ? 1200 : 520);
+  }
+
+  function goldBurst(){
+    flashEl.classList.remove("on"); void flashEl.offsetWidth; flashEl.classList.add("on");
+    chime();
+    const n = reduce ? 6 : 18;
+    for (let i = 0; i < n; i++){
+      const a = Math.random() * Math.PI * 2, r = 50 + Math.random() * 130;
+      const d = document.createElement("div");
+      d.textContent = ["♥", "✦", "✧", "❋"][Math.floor(Math.random() * 4)];
+      d.style.cssText = "position:fixed;left:50%;top:42%;z-index:16;pointer-events:none;color:#c98a1e;font-size:"
+        + (14 + Math.random() * 12).toFixed(0) + "px;transform:translate(-50%,-50%);will-change:transform,opacity";
+      document.body.appendChild(d);
+      const dx = Math.cos(a) * r, dy = Math.sin(a) * r;
+      const anim = d.animate([
+        { transform: "translate(-50%,-50%) scale(.4)", opacity: 0 },
+        { transform: `translate(calc(-50% + ${dx * .5}px), calc(-50% + ${dy * .5}px)) scale(1.1)`, opacity: 1, offset: .3 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(.9)`, opacity: 0 }
+      ], { duration: 1000 + Math.random() * 600, easing: "cubic-bezier(.2,.8,.3,1)" });
+      anim.onfinish = () => d.remove();
+      setTimeout(() => d.remove(), 1800);
+    }
+  }
+
+  function badgePop(text){
+    const b = document.createElement("div");
+    b.className = "badge-pop"; b.textContent = text;
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 2700);
+  }
+
+  function egg99(n){
+    localStorage.setItem("egg-" + n, "1");
+    goldBurst();
+    badgePop("♥ " + n + " 次纪念");
+    const idx = Math.round((n - 99) / 100) % LINES.egg.length;
+    say(LINES.egg[idx], 3000, "egg", true);
+  }
+
+  const Confess = {
+    active: false, timers: [], refused: 0, done: false,
+    line(text, big){
+      confLine.textContent = text;
+      confLine.classList.toggle("big", !!big);
+      confLine.classList.remove("on");
+      void confLine.offsetWidth;
+      confLine.classList.add("on");
+    },
+    clearTimers(){ this.timers.forEach(clearTimeout); this.timers = []; },
+    later(ms, fn){ this.timers.push(setTimeout(fn, ms)); },
+    open(){
+      if (this.active || localStorage.getItem("confess") === "yes") return;
+      this.active = true; this.done = false; this.refused = 0;
+      S.locked = true; S.press = S.pressTarget = 0;
+      localStorage.setItem("confess-seen", String(Date.now()));
+      confVeil.classList.add("show", "hearts");
+      confActs.hidden = true; btnResume.hidden = true;
+      btnRefuse.style.transform = ""; btnAccept.style.setProperty("--grow", 1);
+      confLine.classList.remove("on");
+      startRain(document.getElementById("confessRain"), ["♥", "♡", "✦", "✧", "❀"], 18);
+      Music.play();
+      Sound.purr(0);
+      this.stage(0);
+    },
+    stage(i){
+      const list = LINES.confess;
+      if (i >= list.length){
+        this.later(420, () => { confActs.hidden = false; });
+        return;
+      }
+      this.line(list[i], i >= list.length - 2);
+      this.later(i >= list.length - 2 ? 1650 : 1700, () => this.stage(i + 1));
+    },
+    refuse(){
+      if (this.done) return;
+      this.refused++;
+      this.clearTimers();
+      this.line(pick(LINES.refuse), false);
+      const shrink = Math.max(0.72, 1 - this.refused * 0.07);
+      btnRefuse.style.transform = `scale(${shrink})`;
+      btnAccept.style.setProperty("--grow", Math.min(1.12, 1 + this.refused * 0.03).toFixed(3));
+      btnRefuse.animate([
+        { transform: `scale(${shrink}) translateX(0)` },
+        { transform: `scale(${shrink}) translateX(-5px)` },
+        { transform: `scale(${shrink}) translateX(5px)` },
+        { transform: `scale(${shrink}) translateX(0)` }
+      ], { duration: 320 });
+      this.later(2000, () => {
+        if (!this.done) this.line("做我女朋友吧", true);
+      });
+    },
+    accept(){
+      if (this.done) return;
+      this.done = true;
+      this.clearTimers();
+      confActs.hidden = true;
+      confVeil.classList.remove("hearts");
+      goldBurst();
+      startRain(document.getElementById("confessRain"), ["♥", "♡", "✦", "❀"], 26);
+      const list = LINES.accept;
+      list.forEach((t, i) => this.later(650 + i * 1700, () => this.line(t, i === list.length - 1)));
+      this.later(650 + list.length * 1700 + 500, () => { btnResume.hidden = false; });
+    },
+    finish(){
+      this.active = false;
+      S.locked = false;
+      localStorage.setItem("confess", "yes");
+      confVeil.classList.remove("show");
+      stopRain();
+      Music.stop();
+      badgePop("♥ 520");
+      say("嗯，继续吧", 1900);
+    }
+  };
+
+  const Ultimate = {
+    active: false,
+    open(){
+      if (this.active) return;
+      this.active = true;
+      S.locked = true; S.press = S.pressTarget = 0;
+      localStorage.setItem("ultimate-seen", "yes");
+      ultLine.textContent = LINES.ultimate[0];
+      ultVeil.classList.add("show");
+      startRain(document.getElementById("ultimateRain"), ["✦", "✧", "❀", "♥"], 20);
+      goldBurst();
+      Music.play();
+    },
+    close(){
+      this.active = false;
+      S.locked = false;
+      ultVeil.classList.remove("show");
+      stopRain();
+      Music.stop();
+    }
+  };
+
+  btnRefuse.addEventListener("click", (e) => { e.stopPropagation(); Confess.refuse(); });
+  btnAccept.addEventListener("click", (e) => { e.stopPropagation(); Confess.accept(); });
+  btnResume.addEventListener("click", (e) => { e.stopPropagation(); Confess.finish(); });
+  btnUltEnd.addEventListener("click", (e) => { e.stopPropagation(); Ultimate.close(); });
+
   /* first-idle nudge */
   setTimeout(() => {
     if (!S.started) say(pickMix(["……在看我吗？", "……来了呀。"], LINES.miss, 0.6), 2400);
   }, 5000);
 })();
 </script>
+
 
 <div class="a2hs" id="a2hs">
   <div class="a2hs-in">
