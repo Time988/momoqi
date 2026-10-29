@@ -931,8 +931,8 @@
     setTimeout(() => b.remove(), 2700);
   }
 
-  function egg99(n){
-    localStorage.setItem("egg-" + n, "1");
+  function egg99(n, preview){
+    if (!preview) localStorage.setItem("egg-" + n, "1");
     goldBurst();
     badgePop("♥ " + n + " 次纪念");
     const idx = Math.round((n - 99) / 100) % LINES.egg.length;
@@ -950,11 +950,11 @@
     },
     clearTimers(){ this.timers.forEach(clearTimeout); this.timers = []; },
     later(ms, fn){ this.timers.push(setTimeout(fn, ms)); },
-    open(){
-      if (this.active || localStorage.getItem("confess") === "yes") return;
-      this.active = true; this.done = false; this.refused = 0;
+    open(preview){
+      if (this.active || (!preview && localStorage.getItem("confess") === "yes")) return;
+      this.active = true; this.done = false; this.refused = 0; this.preview = !!preview;
       S.locked = true; S.press = S.pressTarget = 0;
-      localStorage.setItem("confess-seen", String(Date.now()));
+      if (!preview) localStorage.setItem("confess-seen", String(Date.now()));
       confVeil.classList.add("show", "hearts");
       confActs.hidden = true; btnResume.hidden = true;
       btnRefuse.style.transform = ""; btnAccept.style.setProperty("--grow", 1);
@@ -1006,7 +1006,7 @@
     finish(){
       this.active = false;
       S.locked = false;
-      localStorage.setItem("confess", "yes");
+      if (!this.preview) localStorage.setItem("confess", "yes");
       confVeil.classList.remove("show");
       stopRain();
       Music.stop();
@@ -1017,11 +1017,11 @@
 
   const Ultimate = {
     active: false,
-    open(){
+    open(preview){
       if (this.active) return;
-      this.active = true;
+      this.active = true; this.preview = !!preview;
       S.locked = true; S.press = S.pressTarget = 0;
-      localStorage.setItem("ultimate-seen", "yes");
+      if (!preview) localStorage.setItem("ultimate-seen", "yes");
       ultLine.textContent = LINES.ultimate[0];
       ultVeil.classList.add("show");
       startRain(document.getElementById("ultimateRain"), ["✦", "✧", "❀", "♥"], 20);
@@ -1041,6 +1041,15 @@
   btnAccept.addEventListener("click", (e) => { e.stopPropagation(); Confess.accept(); });
   btnResume.addEventListener("click", (e) => { e.stopPropagation(); Confess.finish(); });
   btnUltEnd.addEventListener("click", (e) => { e.stopPropagation(); Ultimate.close(); });
+
+  /* 预览用：网址加 #520 / #9999 / #99 可直接看彩蛋（不写存档） */
+  (function previewHash(){
+    const h = (location.hash || "").replace("#", "");
+    if (!h) return;
+    if (h === "520") setTimeout(() => Confess.open(true), 900);
+    else if (h === "9999") setTimeout(() => Ultimate.open(true), 900);
+    else if (/^\d+$/.test(h) && (+h % 100 === 99)) setTimeout(() => egg99(+h, true), 900);
+  })();
 
   /* first-idle nudge */
   setTimeout(() => {
