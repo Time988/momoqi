@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="给佳佳的一封情书">
+  <meta name="author" content="qzydustin">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#ffe">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Love Letter | 情书">
+  <meta property="og:description" content="给佳佳的一封情书">
+  <meta property="og:type" content="website">
+  
+
+  <!-- Title & Resources -->
+  <title>Love Letter | 情书</title>
+  <link rel="stylesheet" href="../css/fonts.css?v=copy-image-20261113-v5">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/flower.svg">
+  <script src="config.js?v=copy-image-20261113-v5"></script>
+</head>
+<body>
+  <!-- Main Container -->
+  <div id="viewport">
+    <div id="main">
+      <!-- Love Letter Content -->
+      <div id="letter" role="article"></div>
+      
+      <!-- Time Counter -->
+      <div id="clock-box" aria-label="想问你的话" aria-hidden="true">
+        <div id="clock-text"></div>
+        <div id="clock"></div>
+      </div>
+      
+      <!-- Ground Canvas -->
+      <canvas id="ground-canvas" aria-hidden="true"></canvas>
+
+      <!-- Static Canvas (tree) -->
+      <canvas id="static-canvas" aria-hidden="true"></canvas>
+
+      <!-- Dynamic Canvas (falling hearts) -->
+      <canvas id="canvas" aria-label="Animated tree with hearts"></canvas>
+    </div>
+  </div>
+  
+  <!-- Main Script -->
+  <script src="js/geometry.js"></script>
+  <script src="js/animation.js"></script>
+  <script src="js/tree.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Nonflowers — Lingdong Huang, 2018
+https://nonflowers.lingdong.works/
+https://github.com/LingDong-/nonflowers
+MIT. Original drawing, botanical geometry, noise, washes and paper algorithms retained.
+Adaptations: optional onLayers callback exposes the original stem/leaf and petal layers before final paper composition; worker canvas adapter isolates original global RNG/prototype changes; curated HSV palettes; cached click-to-plant composition, ink-reveal timing, undo, local-only persistence and PNG export. The original piece is a static procedural painter; these interactions are an adaptation, not a claim that it originally simulates botanical growth. No AI-generated flower assets are used.

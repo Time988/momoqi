@@ -323,6 +323,8 @@
   @media (prefers-reduced-motion: reduce){
     .glow,.dust,.hintring{animation:none}
   }
+  .confession-entry{display:flex;align-items:center;justify-content:center;gap:12px;width:fit-content;max-width:100%;margin:14px auto 0;padding:10px 20px;border:1px solid #edb7c6;border-radius:999px;background:rgba(255,255,255,.8);color:#ad536f;text-decoration:none;font-size:14px;box-shadow:0 5px 20px #ba657315}
+  .confession-entry span{font-size:11px;opacity:.7}.confession-entry[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -356,6 +358,7 @@
     <div class="count">被摸了 <b id="count">0</b> 次</div>
     <button class="btn" id="soundBtn" aria-label="声音开关">🔊</button>
   </div>
+  <a class="confession-entry" id="confession-entry" href="confession/?from=momoqi" hidden>♡ 写给佳佳的信 <span>再读一次 ↗</span></a>
   <div class="sig">— 仅供屈佳佳使用 —</div>
 </footer>
 <div class="flashgold" id="flashgold"></div>
@@ -381,6 +384,7 @@
   <div class="veil-line big on" id="ultimateLine"></div>
   <button class="vbtn vbtn-continue" id="btnUltEnd">继续摸头</button>
 </div>
+
 
 
 
@@ -433,6 +437,16 @@
     started: false,
   };
   countEl.textContent = S.pats;
+  const confessionEntry = document.getElementById("confession-entry");
+  let confessionUnlocked = localStorage.getItem("confession-unlocked") === "1"
+    || S.pats >= 520 || localStorage.getItem("confess") === "yes"
+    || (+localStorage.getItem("confess-seen") || 0) > 0;
+  function unlockConfession(){
+    confessionUnlocked = true;
+    localStorage.setItem("confession-unlocked", "1");
+    confessionEntry.hidden = false;
+  }
+  if (confessionUnlocked) unlockConfession();
 
   function setPress(v){
     S.pressTarget = Math.max(0, Math.min(1, v));
@@ -715,20 +729,15 @@
       setTimeout(() => Ultimate.open(), 300);
       return;
     }
-    if (crossed(520) && localStorage.getItem("confess") !== "yes"){
-      setTimeout(() => Confess.open(), 320);
+    if (crossed(520) && !confessionUnlocked){
+      setTimeout(openConfession, 320);
       return;
     }
     const hit = eggHit(prev, S.pats);
     if (hit){ setTimeout(() => egg99(hit), 260); return; }
 
-    // 中途关掉页面后，10 分钟内没处理完的告白会在下一次摸头时回来
-    if (!Confess.active && !Ultimate.active
-        && localStorage.getItem("confess") !== "yes"
-        && S.pats >= 520
-        && Date.now() - (+localStorage.getItem("confess-seen") || 0) > 6e5){
-      setTimeout(() => Confess.open(), 400);
-    }
+    if (S.pats >= 520 && !confessionUnlocked) unlockConfession();
+
   }
 
   function eggHit(prev, next){
@@ -939,6 +948,14 @@
     say(LINES.egg[idx], 3000, "egg", true);
   }
 
+  function openConfession(){
+    unlockConfession();
+    Sound.purr(0);
+    // Clear the trigger before navigating, so returning does not reopen the gift.
+    if (location.hash === "#520") history.replaceState(null, "", location.pathname + location.search);
+    location.assign(new URL("confession/?from=momoqi", location.href).href);
+  }
+
   const Confess = {
     active: false, timers: [], refused: 0, done: false,
     line(text, big){
@@ -1042,14 +1059,16 @@
   btnResume.addEventListener("click", (e) => { e.stopPropagation(); Confess.finish(); });
   btnUltEnd.addEventListener("click", (e) => { e.stopPropagation(); Ultimate.close(); });
 
-  /* 预览用：网址加 #520 / #9999 / #99 可直接看彩蛋（不写存档） */
+  /* #520 解锁并进入情书；其余数字仍只预览原彩蛋。 */
   (function previewHash(){
     const h = (location.hash || "").replace("#", "");
     if (!h) return;
-    if (h === "520") setTimeout(() => Confess.open(true), 900);
+    if (h === "520") setTimeout(openConfession, 250);
     else if (h === "9999") setTimeout(() => Ultimate.open(true), 900);
     else if (/^\d+$/.test(h) && (+h % 100 === 99)) setTimeout(() => egg99(+h, true), 900);
   })();
+
+  window.addEventListener("hashchange", () => { if (location.hash === "#520") openConfession(); });
 
   /* first-idle nudge */
   setTimeout(() => {

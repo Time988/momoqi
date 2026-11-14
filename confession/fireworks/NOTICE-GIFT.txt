@@ -1,0 +1,1 @@
+Adapted for a personal gift, 2026-11-12. Original Caleb Miller / NianBroken renderer retained. Changed words, default settings, local font loading, isolated storage key and viewport/audio lifecycle. Apache-2.0 license retained.

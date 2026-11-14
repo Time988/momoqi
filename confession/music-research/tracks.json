@@ -1,0 +1,103 @@
+{
+  "date": "2026-11-13",
+  "localCandidates": [
+    {
+      "id": "there-is-romance",
+      "title": "There is Romance",
+      "artist": "Kevin MacLeod",
+      "isrc": "USUAN1100044",
+      "file": "there-is-romance.m4a",
+      "duration": 197.664,
+      "source": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100044",
+      "assetMirror": "https://commons.wikimedia.org/wiki/File:There_is_Romance_(ISRC_USUAN1100044).mp3",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "\"There is Romance\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License. https://creativecommons.org/licenses/by/4.0/",
+      "note": "主候选：纯钢琴、慢而有旋律，适合图文回忆与书信。作者以持久爱意、婚礼场景形容。",
+      "changes": "Full recording retained; transcoded to AAC 192k for local web playback. No edit, excerpt, fade, normalization, or added audio.",
+      "sha256": "6afb751ed49f55a190f196d05397d45f3e1f9d9d5b723f02f703d4eb740d9472"
+    },
+    {
+      "id": "reawakening",
+      "title": "Reawakening",
+      "artist": "Kevin MacLeod",
+      "isrc": "USUAN1400017",
+      "file": "reawakening.m4a",
+      "duration": 214.073,
+      "source": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400017",
+      "assetMirror": "https://commons.wikimedia.org/wiki/File:Reawakening_(ISRC_USUAN1400017).mp3",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "\"Reawakening\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License. https://creativecommons.org/licenses/by/4.0/",
+      "note": "主候选：钢琴与大提琴，比纯钢琴更有包裹感。作者称其为安静交谈适用的爱情主题，56 bpm。",
+      "changes": "Full recording retained; transcoded to AAC 192k for local web playback. No edit, excerpt, fade, normalization, or added audio.",
+      "sha256": "31cbeb02028cb94679d4a377793c2b8083ebd659785015507bcb8d80d66c5ff5"
+    },
+    {
+      "id": "reverie",
+      "title": "Reverie",
+      "artist": "Scott Buckley",
+      "isrc": null,
+      "file": "reverie.m4a",
+      "duration": 223.673,
+      "source": "https://www.scottbuckley.com.au/library/reverie/",
+      "assetMirror": "https://commons.wikimedia.org/wiki/File:Scott_Buckley_-_Reverie.oga",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "attribution": "'Reverie' by Scott Buckley – released under CC-BY 4.0. www.scottbuckley.com.au. https://creativecommons.org/licenses/by/4.0/",
+      "note": "氛围比较：柔化钢琴、弦乐与合成氛围，作者称之为亲密、梦境感。适合夜景/花海，情绪偏沉静。",
+      "changes": "Full recording retained; transcoded to AAC 192k for local web playback. No edit, excerpt, fade, normalization, or added audio.",
+      "sha256": "92283a7ee1107bd8b7148dd3eb87b7ec225b179e5ed728c4457eb0339bf343a4"
+    }
+  ],
+  "listeningReferences": [
+    {
+      "title": "River Flows in You",
+      "artist": "Yiruma",
+      "url": "https://www.youtube.com/watch?v=92IlKBhKbWM",
+      "purpose": "熟悉的旋律，流动感强，可作为整页温柔钢琴的口味参照。",
+      "type": "Official Artist Channel listening reference only; not downloaded"
+    },
+    {
+      "title": "Kiss the Rain",
+      "artist": "Yiruma",
+      "url": "https://www.youtube.com/watch?v=imGaOIm5HOk",
+      "purpose": "与雨夜回忆相呼应，情绪较内敛和怀念；不一定适合全程贯穿。",
+      "type": "Official Artist Channel listening reference only; not downloaded",
+      "verifiedOEmbed": {
+        "title": "Yiruma, (이루마) - Kiss the Rain",
+        "author_name": "YirumaVEVO",
+        "author_url": "https://www.youtube.com/@YirumaVEVO"
+      }
+    },
+    {
+      "title": "Love Me",
+      "artist": "Yiruma",
+      "url": "https://www.youtube.com/watch?v=sKlh-auOcok",
+      "purpose": "另一首温柔钢琴口味参考，可与River Flows in You比较。",
+      "type": "Official Artist Channel listening reference only; not downloaded",
+      "verifiedOEmbed": {
+        "title": "Love Me",
+        "author_name": "Yiruma - Topic",
+        "author_url": "https://www.youtube.com/channel/UCcweg-swJlth9a_0pEzvdxw"
+      }
+    },
+    {
+      "title": "A Thousand Years",
+      "artist": "The Piano Guys",
+      "url": "https://www.youtube.com/watch?v=6WjuuzhWyh0",
+      "source": "https://thepianoguys.com/pages/thousand-years",
+      "purpose": "钢琴与大提琴，作者说明其婚礼意象；更适合花树至告白终章的情绪，而非安静阅读段。",
+      "type": "Official Artist Channel listening reference only; not downloaded"
+    },
+    {
+      "title": "One Summer’s Day",
+      "artist": "Joe Hisaishi",
+      "url": "https://www.youtube.com/watch?v=TK1Ij_-mank",
+      "source": "https://joehisaishi.com/music/one-summers-day/",
+      "purpose": "回忆、光线与景色的气质参考。使用2019器乐视频，不用2023英文演唱版本。",
+      "type": "Official Artist Channel listening reference only; not downloaded"
+    }
+  ],
+  "assessmentNote": "Selections are based on verified composer descriptions, instrumentation and decoded file validation. No claim of subjective listening is made; final auditory judgment is for user audition."
+}

@@ -1,0 +1,14 @@
+.rain-memory{box-shadow:0 1.3rem 3.5rem #5f363f21;aspect-ratio:539/720;isolation:isolate;overflow:hidden}
+.rain-memory>a:first-child{position:absolute;inset:0;display:block}.rain-memory img{height:100%;object-fit:cover}
+.rain-memory iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .8s}.rain-memory iframe.loaded{opacity:1}
+.rain-original{position:absolute;z-index:2;top:24px;left:24px;color:#fff8ec;text-shadow:0 1px 8px #222c;text-decoration:none;font-size:.76rem}
+.night-review-link{position:fixed;left:16px;bottom:14px;z-index:35;background:#fff9f5e8;padding:8px 13px;border:1px solid #bc6f832b;border-radius:30px;font-size:13px;color:#8d4d62;text-decoration:none;box-shadow:0 4px 20px #674d5710}
+@media(max-width:600px){.night-review-link{position:static;display:block;width:fit-content;margin:0 auto 24px}.music-player{max-width:calc(100vw - 20px)}}
+
+.scene-next{text-align:center;margin:2.3rem auto 0;font-size:.94rem}.scene-next a{color:var(--rose-deep);text-underline-offset:6px}
+
+.botanic-section{padding-top:5rem;padding-bottom:6rem;background:linear-gradient(180deg,#fff9f5,#fcf5ef 70%,#fff9f5)}
+.botanic-stage{position:relative;max-width:1180px;margin:0 auto;min-height:690px}.botanic-stage iframe{width:100%;height:690px;display:block;border:0;background:transparent}.botanic-loading{position:absolute;top:220px;left:0;right:0;text-align:center;color:#9c8280;font-size:1rem}
+@media(max-width:700px){.botanic-stage,.botanic-stage iframe{height:700px;min-height:700px}}
+
+body.botanic-scene-active #celebration-canvas{opacity:0}

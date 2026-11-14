@@ -1,0 +1,357 @@
+(() => {
+  "use strict";
+
+  const content = window.SITE_CONTENT;
+  if (!content || typeof content !== "object") return;
+
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let reduceMotion = motionQuery.matches;
+
+  const setText = (selector, value) => {
+    const node = document.querySelector(selector);
+    if (node && typeof value === "string") node.textContent = value;
+  };
+
+  const setMeta = (selector, value) => {
+    const node = document.querySelector(selector);
+    if (node && typeof value === "string") node.setAttribute("content", value);
+  };
+
+  document.title = content.pageTitle || document.title;
+  setMeta('meta[name="description"]', content.description);
+  setMeta('meta[property="og:title"]', content.pageTitle);
+  setMeta('meta[property="og:description"]', content.description);
+
+  [
+    "occasion", "recipientName", "heroEyebrow", "heroSubtitle",
+    "galleryEyebrow", "galleryHeading", "footerText"
+  ].forEach((key) => setText(`[data-content="${key}"]`, content[key]));
+
+  const fallbackPhotos = ["assets/memories/hats.webp"];
+
+  document.querySelectorAll(".polaroid").forEach((card, index) => {
+    const photo = Array.isArray(content.photos) ? content.photos[index] : null;
+    const image = card.querySelector("img");
+    const caption = card.querySelector(".photo-caption");
+    const date = card.querySelector(".photo-date");
+    const fallback = fallbackPhotos[index] || fallbackPhotos[0];
+
+    if (!image) return;
+    image.addEventListener("error", () => {
+      if (!image.src.endsWith(fallback)) image.src = fallback;
+    });
+    image.src = photo && typeof photo.src === "string" && photo.src.trim() ? photo.src : fallback;
+    image.alt = photo && typeof photo.alt === "string" ? photo.alt : `Photo placeholder ${index + 1}`;
+    if (caption && photo && typeof photo.caption === "string") caption.textContent = photo.caption;
+    if (date && photo && typeof photo.date === "string") date.textContent = photo.date;
+  });
+
+  document.addEventListener("open-tree-letter", () => {
+    if (!reduceMotion) launchConfetti();
+  });
+
+  const revealNodes = Array.from(document.querySelectorAll(".reveal"));
+  let revealObserver = null;
+
+  const setupReveals = () => {
+    if (revealObserver) revealObserver.disconnect();
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      revealNodes.forEach((node) => node.classList.add("is-visible"));
+      return;
+    }
+    revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -8%", threshold: 0.12 });
+    revealNodes.forEach((node) => revealObserver.observe(node));
+  };
+
+  const player = document.querySelector("#music-player");
+  const musicButton = document.querySelector("#music-button");
+  const audio = document.querySelector("#background-music");
+  const musicBars = document.querySelector("#music-bars");
+  const musicStatus = document.querySelector("#music-status");
+  const musicSettings = content.music && typeof content.music === "object" ? content.music : {};
+  const musicFile = typeof musicSettings.file === "string"
+    ? musicSettings.file.trim()
+    : "";
+  const musicEnabled = musicSettings.enabled === true && Boolean(musicFile);
+  const delayedSettings = musicSettings.delayedPlayback && typeof musicSettings.delayedPlayback === "object"
+    ? musicSettings.delayedPlayback
+    : {};
+  const delayedPlaybackEnabled = delayedSettings.enabled === true;
+  const configuredDelay = Number(delayedSettings.delayMs);
+  const playbackDelay = Number.isFinite(configuredDelay) && configuredDelay >= 0
+    ? Math.min(configuredDelay, 60000)
+    : 3000;
+  let firstInteractionHandled = false;
+  let delayedPlaybackTimer = 0;
+  let playbackPending = false;
+  let manuallyControlled = false;
+
+  const updateMusicState = (playing) => {
+    if (!musicButton) return;
+    musicButton.setAttribute("aria-pressed", String(playing));
+    musicButton.setAttribute("aria-label", playing ? "暂停音乐" : "播放音乐");
+    const icon = musicButton.querySelector(".music-icon");
+    if (icon) icon.textContent = playing ? "Ⅱ" : "♪";
+    if (musicBars) musicBars.classList.toggle("is-playing", playing);
+  };
+
+  const setMusicStatus = (message) => {
+    if (musicStatus) musicStatus.textContent = message;
+  };
+
+  if (musicEnabled && player && audio && musicButton) {
+    audio.preload = "none";
+    audio.src = musicFile;
+    audio.volume = .38;
+    document.addEventListener("visibilitychange",()=>{if(document.hidden)audio.pause()});
+    window.addEventListener("pagehide",()=>audio.pause());
+    player.hidden = false;
+    setText("#music-title", musicSettings.title || "这一页的音乐");
+
+    const requestPlayback = async ({ automatic = false } = {}) => {
+      if (playbackPending || !audio.paused) return !audio.paused;
+      playbackPending = true;
+      try {
+        if (audio.error) audio.load();
+        const playResult = audio.play();
+        if (playResult && typeof playResult.then === "function") await playResult;
+        updateMusicState(true);
+        setMusicStatus("音乐正在播放");
+        return true;
+      } catch {
+        updateMusicState(false);
+        setMusicStatus(automatic
+          ? "可以点击右上角的音乐按钮开始播放"
+          : "音乐暂时没有播放，可以再试一次");
+        return false;
+      } finally {
+        playbackPending = false;
+      }
+    };
+
+    const clearDelayedPlayback = () => {
+      if (!delayedPlaybackTimer) return;
+      window.clearTimeout(delayedPlaybackTimer);
+      delayedPlaybackTimer = 0;
+    };
+
+    const removeInteractionListeners = () => {
+      document.removeEventListener("pointerup", handleFirstInteraction, true);
+      document.removeEventListener("click", handleFirstInteraction, true);
+      document.removeEventListener("keydown", handleFirstInteraction, true);
+    };
+
+    function handleFirstInteraction(event) {
+      if (firstInteractionHandled) return;
+      if (event.type === "keydown" && (event.repeat || event.isComposing || ["Alt", "Control", "Meta", "Shift"].includes(event.key))) {
+        return;
+      }
+      firstInteractionHandled = true;
+      removeInteractionListeners();
+      setMusicStatus(`Music is scheduled to start in ${playbackDelay} milliseconds.`);
+      delayedPlaybackTimer = window.setTimeout(() => {
+        delayedPlaybackTimer = 0;
+        if (!manuallyControlled && audio.paused) requestPlayback({ automatic: true });
+      }, playbackDelay);
+    }
+
+    if (delayedPlaybackEnabled) {
+      document.addEventListener("pointerup", handleFirstInteraction, true);
+      document.addEventListener("click", handleFirstInteraction, true);
+      document.addEventListener("keydown", handleFirstInteraction, true);
+    }
+
+    musicButton.addEventListener("click", async () => {
+      manuallyControlled = true;
+      clearDelayedPlayback();
+      removeInteractionListeners();
+      if (audio.paused) {
+        await requestPlayback();
+      } else {
+        audio.pause();
+        updateMusicState(false);
+        setMusicStatus("音乐已暂停");
+      }
+    });
+    audio.addEventListener("play", () => updateMusicState(true));
+    audio.addEventListener("pause", () => updateMusicState(false));
+    audio.addEventListener("ended", () => {
+      updateMusicState(false);
+      setMusicStatus("音乐已结束，可以点击重播");
+    });
+    audio.addEventListener("error", () => {
+      updateMusicState(false);
+      setMusicStatus("音乐暂时没有载入，可以稍后重试");
+    });
+  }
+
+  const canvas = document.querySelector("#celebration-canvas");
+  const context = canvas ? canvas.getContext("2d") : null;
+  let petals = [];
+  let scenePaused = false;
+  let confetti = [];
+  let animationFrame = 0;
+  let previousTime = 0;
+  let resizeFrame = 0;
+  let viewportWidth = 0;
+  let viewportHeight = 0;
+  let pixelRatio = 1;
+
+  const clampCount = (value, fallback, maximum) => {
+    const numeric = Number(value);
+    return Number.isFinite(numeric) ? Math.max(0, Math.min(maximum, Math.round(numeric))) : fallback;
+  };
+
+  const petalColors = content.petals && Array.isArray(content.petals.colors) && content.petals.colors.length
+    ? content.petals.colors.slice(0, 8)
+    : ["#ed9fb1", "#f5bdc9"];
+  const confettiColors = content.confetti && Array.isArray(content.confetti.colors) && content.confetti.colors.length
+    ? content.confetti.colors.slice(0, 10)
+    : ["#bc6f83", "#d99856", "#7f9b76"];
+
+  const makePetal = (randomY = true) => ({
+    x: Math.random() * viewportWidth,
+    y: randomY ? Math.random() * viewportHeight : -20,
+    size: 5 + Math.random() * 8,
+    speed: 12 + Math.random() * 24,
+    drift: -10 + Math.random() * 20,
+    rotation: Math.random() * Math.PI * 2,
+    spin: -1 + Math.random() * 2,
+    color: petalColors[Math.floor(Math.random() * petalColors.length)]
+  });
+
+  const sizeCanvas = () => {
+    if (!canvas || !context) return;
+    viewportWidth = window.innerWidth;
+    viewportHeight = window.innerHeight;
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(viewportWidth * pixelRatio);
+    canvas.height = Math.round(viewportHeight * pixelRatio);
+    canvas.style.width = `${viewportWidth}px`;
+    canvas.style.height = `${viewportHeight}px`;
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+    const enabled = content.petals && content.petals.enabled !== false;
+    const wanted = enabled ? clampCount(content.petals.count, 24, 60) : 0;
+    petals = Array.from({ length: wanted }, (_, index) => petals[index] || makePetal(true));
+  };
+
+  const drawPetal = (petal) => {
+    context.save();
+    context.translate(petal.x, petal.y);
+    context.rotate(petal.rotation);
+    context.fillStyle = petal.color;
+    context.globalAlpha = 0.72;
+    context.beginPath();
+    context.ellipse(0, 0, petal.size * 0.55, petal.size, 0, 0, Math.PI * 2);
+    context.fill();
+    context.restore();
+  };
+
+  const drawConfetti = (piece) => {
+    context.save();
+    context.translate(piece.x, piece.y);
+    context.rotate(piece.rotation);
+    context.fillStyle = piece.color;
+    context.globalAlpha = Math.max(0, piece.life / piece.maxLife);
+    context.fillRect(-piece.size / 2, -piece.size / 3, piece.size, piece.size * 0.65);
+    context.restore();
+  };
+
+  const animate = (time) => {
+    if (!context || reduceMotion || document.hidden || scenePaused) return;
+    const delta = Math.min((time - previousTime) / 1000 || 0, 0.04);
+    previousTime = time;
+    context.clearRect(0, 0, viewportWidth, viewportHeight);
+
+    petals.forEach((petal) => {
+      petal.y += petal.speed * delta;
+      petal.x += (petal.drift + Math.sin(petal.y / 45) * 7) * delta;
+      petal.rotation += petal.spin * delta;
+      if (petal.y > viewportHeight + 20 || petal.x < -30 || petal.x > viewportWidth + 30) {
+        Object.assign(petal, makePetal(false));
+      }
+      drawPetal(petal);
+    });
+
+    confetti.forEach((piece) => {
+      piece.vy += 620 * delta;
+      piece.x += piece.vx * delta;
+      piece.y += piece.vy * delta;
+      piece.rotation += piece.spin * delta;
+      piece.life -= delta;
+      drawConfetti(piece);
+    });
+    confetti = confetti.filter((piece) => piece.life > 0 && piece.y < viewportHeight + 30);
+    animationFrame = window.requestAnimationFrame(animate);
+  };
+
+  const startAnimation = () => {
+    if (!context || reduceMotion || document.hidden || scenePaused || animationFrame) return;
+    previousTime = performance.now();
+    animationFrame = window.requestAnimationFrame(animate);
+  };
+
+  const stopAnimation = () => {
+    window.cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+    if (context) context.clearRect(0, 0, viewportWidth, viewportHeight);
+  };
+
+  document.addEventListener('gift-petal-pause', (event) => {
+    scenePaused = event.detail === true;
+    if (scenePaused) stopAnimation(); else startAnimation();
+  });
+
+  function launchConfetti() {
+    if (reduceMotion || !context || !content.confetti || content.confetti.enabled === false) return;
+    const count = clampCount(content.confetti.count, 90, 180);
+    const maxLife = 2.6;
+    const originX = viewportWidth / 2;
+    const originY = Math.min(viewportHeight * 0.72, viewportHeight - 80);
+    confetti = Array.from({ length: count }, () => ({
+      x: originX + (Math.random() - 0.5) * 80,
+      y: originY,
+      vx: (Math.random() - 0.5) * 520,
+      vy: -250 - Math.random() * 430,
+      size: 5 + Math.random() * 7,
+      rotation: Math.random() * Math.PI,
+      spin: (Math.random() - 0.5) * 11,
+      life: maxLife,
+      maxLife,
+      color: confettiColors[Math.floor(Math.random() * confettiColors.length)]
+    }));
+    startAnimation();
+  }
+
+  const handleMotionChange = (event) => {
+    reduceMotion = event.matches;
+    setupReveals();
+    if (reduceMotion) {
+      stopAnimation();
+    } else {
+      sizeCanvas();
+      startAnimation();
+    }
+  };
+
+  motionQuery.addEventListener("change", handleMotionChange);
+  window.addEventListener("resize", () => {
+    window.cancelAnimationFrame(resizeFrame);
+    resizeFrame = window.requestAnimationFrame(sizeCanvas);
+  }, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopAnimation();
+    else startAnimation();
+  });
+
+  setupReveals();
+  sizeCanvas();
+  if (!reduceMotion) startAnimation();
+})();

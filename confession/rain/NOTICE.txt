@@ -1,0 +1,6 @@
+Rain & Water Effect Experiments — Lucas Bebber for Codrops, 2015
+https://github.com/codrops/RainEffect
+https://tympanus.net/Development/RainEffect/
+License stated by original README: "Integrate or build upon it for free in your personal or commercial projects. Don't republish, redistribute or sell as-is."
+https://tympanus.net/codrops/licensing/
+This adaptation integrates the authored droplet physics and refraction into a personal memory scene, with local image textures, native ES modules, viewport pause/resume, reduced motion, and an original-image toggle. Original code and drop textures retained. No original demo pages/branding/media are redistributed as-is.
