@@ -23,6 +23,7 @@ panel.innerHTML='<div class="lucky-heading"><span>Jake Miller · Lucky Me</span>
 document.body.append(panel);
 const details=document.createElement('button');details.className='lucky-details';details.type='button';details.textContent='⋯';details.setAttribute('aria-label','打开音乐设置');details.setAttribute('aria-controls','lucky-panel');details.setAttribute('aria-expanded','false');shell.append(details);
 const host=panel.querySelector('#lucky-video');
+const hint=shell.querySelector('.music-kicker');hint.textContent='正在连接音乐…';
 let frame=null,widget=null,ready=false,playing=false,manualPause=false,everPlayed=false,fallback=false,disposed=false;
 shell.hidden=false;title.textContent='Lucky Me · 原唱';button.removeAttribute('aria-expanded');button.removeAttribute('aria-controls');
 function update(){button.setAttribute('aria-label',playing?'暂停音乐':'播放音乐');button.setAttribute('aria-pressed',String(playing));button.querySelector('.music-icon').textContent=playing?'Ⅱ':'♪';bars.classList.toggle('is-playing',playing)}
@@ -31,11 +32,11 @@ function requestPlay(){if(disposed||manualPause)return;if(ready&&widget)widget.p
 function connect(){
  if(disposed||fallback||!window.SC?.Widget)return;
  widget=window.SC.Widget(frame);const events=window.SC.Widget.Events;
- widget.bind(events.READY,()=>{ready=true;widget.setVolume(38);status.textContent='点一下页面，听这首写给你的歌。';requestPlay()});
- widget.bind(events.PLAY,()=>{playing=true;everPlayed=true;manualPause=false;status.textContent='Lucky Me 正在循环播放。';update()});
- widget.bind(events.PAUSE,()=>{playing=false;update()});
+ widget.bind(events.READY,()=>{ready=true;hint.textContent='轻点播放音乐';widget.setVolume(38);status.textContent='点一下页面，听这首写给你的歌。';requestPlay()});
+ widget.bind(events.PLAY,()=>{hint.textContent='正在循环播放';playing=true;everPlayed=true;manualPause=false;status.textContent='Lucky Me 正在循环播放。';update()});
+ widget.bind(events.PAUSE,()=>{playing=false;hint.textContent='音乐已暂停';update()});
  widget.bind(events.FINISH,()=>{if(!manualPause&&!disposed){widget.seekTo(0);widget.play()}});
- widget.bind(events.ERROR,()=>{playing=false;status.textContent='音乐暂时未能载入，可以打开音乐设置重试。';update()});
+ widget.bind(events.ERROR,()=>{playing=false;hint.textContent='音乐连接未成功';status.textContent='音乐暂时未能载入，可以打开音乐设置重试。';update()});
 }
 function load(){
  disposed=false;ready=false;fallback=false;
@@ -46,7 +47,7 @@ function load(){
 button.addEventListener('click',()=>{if(fallback){show(true);return}if(playing){manualPause=true;widget.pause()}else{manualPause=false;requestPlay();if(!ready)show(true)}});
 details.addEventListener('click',()=>show(panel.hidden));
 panel.querySelector('#lucky-close').addEventListener('click',()=>{show(false);details.focus()});
-panel.querySelector('#lucky-fallback').addEventListener('click',()=>{if(widget&&ready)widget.pause();fallback=true;ready=false;widget=null;playing=false;manualPause=true;frame.src='https://audiomack.com/embed/jake-miller/song/lucky-me?autoplay=1';status.textContent='备用播放器需要点击播放，不支持自动循环。';update()});
+panel.querySelector('#lucky-fallback').addEventListener('click',()=>{if(widget&&ready)widget.pause();fallback=true;hint.textContent='备用播放 · 不支持循环';panel.querySelector('p').textContent='备用播放器需点击播放，不能自动循环。';ready=false;widget=null;playing=false;manualPause=true;frame.src='https://audiomack.com/embed/jake-miller/song/lucky-me?autoplay=1';status.textContent='备用播放器需要点击播放，不支持自动循环。';update()});
 function gesture(event){if(event.target.closest?.('#music-player,#lucky-panel'))return;if(!everPlayed&&!manualPause)requestPlay()}
 document.addEventListener('pointerdown',gesture,{capture:true});document.addEventListener('keydown',gesture,{capture:true});
 document.addEventListener('keydown',event=>{if(event.key==='Escape')show(false)});

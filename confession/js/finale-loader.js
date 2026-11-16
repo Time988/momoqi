@@ -10,5 +10,5 @@ const observer = new IntersectionObserver(async ([entry]) => {
     document.getElementById('flower-question').classList.add('is-visible');
     document.getElementById('replay-flowers').hidden = true;
   }
-}, {rootMargin: '200px'});
+}, {rootMargin: '1200px'});
 observer.observe(stage);

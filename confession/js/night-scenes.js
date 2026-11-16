@@ -1,6 +1,7 @@
 (()=>{
 const frame=document.querySelector('#rain-frame'),stage=document.querySelector('#rain-memory');
 let visible=false,ready=false;
+const warmObserver=new IntersectionObserver(([entry])=>{if(!entry.isIntersecting)return;if(!frame.getAttribute('src'))frame.src=frame.dataset.src;warmObserver.disconnect()},{rootMargin:'1000px'});warmObserver.observe(stage);
 function sync(){if(ready)frame.contentWindow.postMessage({type:'gift-rain',play:visible&&!document.hidden},location.origin)}
 new IntersectionObserver(([entry])=>{
   visible=entry.isIntersecting;
