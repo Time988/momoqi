@@ -8,5 +8,5 @@ const tracks={
 const choice=new URLSearchParams(location.search).get('music');
 if(tracks[choice]){const t=tracks[choice];window.SITE_CONTENT.music={enabled:true,file:'music-research/'+t.file,title:t.title,delayedPlayback:{enabled:false}};return}
 window.SITE_CONTENT.music={enabled:false,file:'',title:'Lucky Me'};
-window.LUCKY_MUSIC={variant:'vocal'};
+window.LUCKY_MUSIC={variant:'vocal',file:'assets/music/lucky-me.m4a'};
 })();

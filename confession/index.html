@@ -13,15 +13,13 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="给佳佳">
   <meta name="twitter:card" content="summary">
-  <link rel="preconnect" href="https://w.soundcloud.com">
-  <link rel="preconnect" href="https://api-v2.soundcloud.com" crossorigin>
   <link rel="preload" href="assets/fonts/garden-letter-hand.woff2?v=copy-image-20261113-v5" as="font" type="font/woff2" crossorigin>
   <link rel="icon" href="assets/flower.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/fonts.css?v=copy-image-20261113-v5">
   <link rel="stylesheet" href="css/floral.css?v=visible-content-20261116">
   <link rel="stylesheet" href="css/integration.css?v=copy-image-20261113-v5">
   <script src="js/content.js?v=visible-content-20261116" defer></script>
-  <script src="js/night-config.js?v=lucky-publish-20261114" defer></script>
+  <script src="js/night-config.js?v=native-audio-20261116" defer></script>
   <link rel="stylesheet" href="css/night.css?v=copy-image-20261113-v5">
   <script src="js/night-scenes.js?v=loading-20261116" defer></script>
   <script src="js/botanic-bridge.js?v=loading-20261116" defer></script>
@@ -29,7 +27,7 @@
   <script src="js/scenes.js?v=copy-image-20261113-v5" defer></script>
   <script src="js/integration.js?v=copy-image-20261113-v5" defer></script>
   <link rel="stylesheet" href="css/lucky-music.css?v=lucky-loop-20261116">
-  <script src="js/lucky-music.js?v=loading-20261116" defer></script>
+  <script src="js/lucky-music.js?v=native-audio-20261116" defer></script>
 
   <script src="js/component-preload.js?v=loading-20261116-2" defer></script>
   <script type="module" src="js/finale-loader.js?v=loading-20261116"></script>
@@ -53,7 +51,8 @@
       <i></i><i></i><i></i><i></i>
     </span>
     <span class="sr-only" id="music-status" aria-live="polite"></span>
-    <audio id="background-music" preload="none" loop></audio>
+    <audio id="background-music" src="assets/music/lucky-me.m4a" autoplay loop preload="auto" playsinline></audio>
+    <script>document.getElementById("background-music").volume=.38;</script>
   </div>
 
   <header class="hero" id="top">
