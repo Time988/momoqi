@@ -354,9 +354,10 @@ a { color: var(--rose-deep); }
 .music-bars.is-playing i:nth-child(3) { animation-delay: -.5s; }
 .music-bars.is-playing i:nth-child(4) { animation-delay: -.15s; }
 
-.js .reveal { opacity: 0; transform: translateY(2rem); }
+/* Keep the letter readable even when scripts or transitions are delayed. */
+.js .reveal { opacity: 1; transform: translateY(.75rem); }
 .js .reveal.is-visible { opacity: 1; transform: translateY(0); transition: opacity 750ms ease, transform 750ms cubic-bezier(.2,.75,.25,1); }
-.js .polaroid.reveal { transform: translateY(2.5rem) rotate(var(--tilt)); }
+.js .polaroid.reveal { transform: translateY(.75rem) rotate(var(--tilt)); }
 .js .polaroid.reveal.is-visible { transform: translateY(0) rotate(var(--tilt)); }
 .js .polaroid.reveal.is-visible:hover { transform: translateY(-.45rem) rotate(0); }
 
