@@ -358,7 +358,7 @@
     <div class="count">被摸了 <b id="count">0</b> 次</div>
     <button class="btn" id="soundBtn" aria-label="声音开关">🔊</button>
   </div>
-  <a class="confession-entry" id="confession-entry" href="confession/?from=momoqi&amp;v=native-audio-20261116" hidden>♡ 写给佳佳的信 <span>再读一次 ↗</span></a>
+  <a class="confession-entry" id="confession-entry" href="confession/?from=momoqi&amp;v=native-audio-20261116-2" hidden>♡ 写给佳佳的信 <span>再读一次 ↗</span></a>
   <div class="sig">— 仅供屈佳佳使用 —</div>
 </footer>
 <div class="flashgold" id="flashgold"></div>
@@ -953,7 +953,7 @@
     Sound.purr(0);
     // Clear the trigger before navigating, so returning does not reopen the gift.
     if (location.hash === "#520") history.replaceState(null, "", location.pathname + location.search);
-    location.assign(new URL("confession/?from=momoqi&v=native-audio-20261116", location.href).href);
+    location.assign(new URL("confession/?from=momoqi&v=native-audio-20261116-2", location.href).href);
   }
 
   const Confess = {
