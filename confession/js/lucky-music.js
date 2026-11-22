@@ -1,9 +1,10 @@
 (()=>{
 'use strict';
-if(!window.LUCKY_MUSIC?.file)return;
+if(!window.LUCKY_MUSIC)return;
 const audio=document.querySelector('#background-music'),shell=document.querySelector('#music-player'),button=document.querySelector('#music-button'),title=document.querySelector('#music-title'),bars=document.querySelector('#music-bars'),status=document.querySelector('#music-status'),hint=shell.querySelector('.music-kicker');
 let manualPause=false,pending=false,resumeOnReturn=false;
-const file=window.LUCKY_MUSIC.file;
+// Older cached pages may still load this script with only a variant in their config.
+const file = window.LUCKY_MUSIC.file || 'assets/music/lucky-me.m4a';
 if(audio.getAttribute('src')!==file)audio.src=file;
 audio.autoplay=true;audio.loop=true;audio.preload='auto';audio.volume=.38;
 shell.hidden=false;title.textContent='Lucky Me · 原唱';
